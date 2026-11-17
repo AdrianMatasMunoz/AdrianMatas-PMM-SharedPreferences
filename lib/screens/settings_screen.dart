@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:preferences_app_plantilla/preferences/preferences.dart';
+import 'package:preferences_app_plantilla/providers/theme_provider.dart';
 import 'package:preferences_app_plantilla/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routerName = 'settings';
@@ -11,9 +14,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isDarkMode = false;
+  /*bool _isDarkMode = false;
   int _genere = 1;
-  String _nom = 'Jaume Camps';
+  String _nom = 'Jaume Camps';*/
 
   @override
   Widget build(BuildContext context) {
@@ -33,37 +36,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         TextStyle(fontSize: 45, fontWeight: FontWeight.w300)),
                 const Divider(),
                 SwitchListTile(
-                    value: _isDarkMode,
+                    value: Preferences.isDarkMode,
                     title: const Text('Dark Mode'),
                     onChanged: (value) {
-                      _isDarkMode = value;
+                      Preferences.isDarkMode = value;
+                      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+                      value ? themeProvider.setDarkMode() : themeProvider.setLightMode();
                       setState(() {});
                     }),
                 const Divider(),
-                RadioListTile<int>(
-                    value: 1,
-                    groupValue: _genere,
-                    title: const Text('Masculino'),
-                    onChanged: (value) {
-                      _genere = value ?? 1;
-                      setState(() {});
-                    }),
-                const Divider(),
-                RadioListTile<int>(
-                    value: 2,
-                    groupValue: _genere,
-                    title: const Text('Femenino'),
-                    onChanged: (value) {
-                      _genere = value ?? 1;
-                      setState(() {});
-                    }),
+                RadioGroup(
+                  groupValue: Preferences.genere,
+                  onChanged: (value) {
+                    Preferences.genere = value ?? 1;
+                    setState(() {});
+                  },
+                  child: const Column(
+                    children: [
+                      RadioListTile(value: 1, title: Text('Masculí')),
+                      Divider(),
+                      RadioListTile(value: 2, title: Text('Femení')),
+                    ],
+                  ),
+                ),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: TextFormField(
-                    initialValue: 'Jaume Camps',
+                    initialValue: Preferences.nom,
                     onChanged: (value) {
-                      _nom = value;
+                      Preferences.nom = value;
                       setState(() {});
                     },
                     decoration: InputDecoration(
